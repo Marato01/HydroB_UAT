@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class LinechartPH extends StatefulWidget {
@@ -11,9 +12,9 @@ class LinechartPH extends StatefulWidget {
 }
 
 class _LinechartPHState extends State<LinechartPH> {
-
   List<_ChartData> _chartData = [];
   late Box<List<int>> _box;
+
   @override
   void initState() {
     super.initState();
@@ -21,7 +22,7 @@ class _LinechartPHState extends State<LinechartPH> {
   }
 
   Future<void> _initializeHiveBox() async {
-    // Open the Hive box
+    // Initialize Hive box
     _box = await Hive.openBox<List<int>>('numberBox');
 
     // Load existing data from Hive
@@ -29,69 +30,73 @@ class _LinechartPHState extends State<LinechartPH> {
 
     // Convert stored numbers to chart data
     setState(() {
-      _chartData = storedNumbers.asMap().entries.map((entry) {
-        return _ChartData(entry.key, entry.value.toDouble());
-      }).toList();
+      _chartData = _convertToChartData(storedNumbers);
     });
 
     // Listen for Hive box changes
     _box.listenable().addListener(_updateChartFromHive);
   }
 
+  List<_ChartData> _convertToChartData(List<int> numbers) {
+    final now = DateTime.now();
+    return numbers.asMap().entries.map((entry) {
+      // Generate a DateTime for each entry, assuming 1-second intervals
+      final timestamp = now.add(Duration(seconds: entry.key - numbers.length));
+      return _ChartData(timestamp, entry.value.toDouble());
+    }).toList();
+  }
+
   void _updateChartFromHive() {
     List<int> storedNumbers = _box.get('numbers', defaultValue: [])!;
-
     setState(() {
-      _chartData = storedNumbers.asMap().entries.map((entry) {
-        return _ChartData(entry.key, entry.value.toDouble());
-      }).toList();
+      _chartData = _convertToChartData(storedNumbers);
     });
   }
 
-  // @override
-  // void dispose() {
-  //   // Remove the listener when the widget is disposed
-  //   _box.listenable().removeListener(_updateChartFromHive);
-  //   super.dispose();
-  // }
-
+  @override
+  void dispose() {
+    // Remove the listener when the widget is disposed
+    _box.listenable().removeListener(_updateChartFromHive);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-          child: SfCartesianChart(
-            primaryXAxis: NumericAxis(
-              title: AxisTitle(text: 'Time'),
-              isVisible: true, // Make X-axis visible
-            ),
-            primaryYAxis: NumericAxis(
-              // title: AxisTitle(text: 'Value'),
-              isVisible: true, // Make Y-axis visible
-            ),
-            series:[
-              SplineAreaSeries<_ChartData, int>(
-                dataSource: _chartData,
-                xValueMapper: (_ChartData data, _) => data.x,
-                yValueMapper: (_ChartData data, _) => data.y,
-                color: Colors.green.withOpacity(0.3),
-                borderColor: Colors.green,
-                borderWidth: 2,
-                // Optional: Add data labels
-                dataLabelSettings: DataLabelSettings(
-                  isVisible: true,
-                  labelAlignment: ChartDataLabelAlignment.auto,
-                ),
+        child: SfCartesianChart(
+          backgroundColor: Colors.white,
+          primaryXAxis: DateTimeAxis(
+            majorGridLines: MajorGridLines(width: 0), // Hides X-axis grid lines
+            intervalType: DateTimeIntervalType.seconds,
+            dateFormat: DateFormat('HH:mm:ss'),
+          ),
+          primaryYAxis: NumericAxis(
+            majorGridLines: MajorGridLines(width: 0), // Hides Y-axis grid lines
+            isVisible: true, // Make Y-axis visible
+          ),
+          series: [
+            SplineAreaSeries<_ChartData, DateTime>(
+              dataSource: _chartData,
+              xValueMapper: (_ChartData data, _) => data.time,
+              yValueMapper: (_ChartData data, _) => data.value,
+              color: Colors.green.withOpacity(0.3),
+              borderColor: Colors.green,
+              borderWidth: 2,
+              dataLabelSettings: const DataLabelSettings(
+                isVisible: false,
+                // labelAlignment: ChartDataLabelAlignment.auto,
               ),
-            ],
-          )
+            ),
+          ],
+        ),
       ),
     );
   }
 }
-class _ChartData {
-  _ChartData(this.x, this.y);
-  final int x;
-  final double y;
-}
 
+class _ChartData {
+  _ChartData(this.time, this.value);
+  final DateTime time; // Use DateTime instead of int
+  final double value;
+}
