@@ -65,11 +65,13 @@ class _LinechartPHState extends State<LinechartPH> {
     return Scaffold(
       body: Center(
         child: SfCartesianChart(
+          margin: EdgeInsets.all(0.5),
           backgroundColor: Colors.white,
           primaryXAxis: DateTimeAxis(
             majorGridLines: MajorGridLines(width: 0), // Hides X-axis grid lines
-            intervalType: DateTimeIntervalType.seconds,
-            dateFormat: DateFormat('HH:mm:ss'),
+            // intervalType: DateTimeIntervalType.milliseconds,
+            dateFormat: DateFormat('HH:mm'),
+            rangePadding: ChartRangePadding.auto,
           ),
           primaryYAxis: NumericAxis(
             majorGridLines: MajorGridLines(width: 0), // Hides Y-axis grid lines
@@ -82,10 +84,9 @@ class _LinechartPHState extends State<LinechartPH> {
               yValueMapper: (_ChartData data, _) => data.value,
               color: Colors.green.withOpacity(0.3),
               borderColor: Colors.green,
-              borderWidth: 2,
+              borderWidth: 1,
               dataLabelSettings: const DataLabelSettings(
                 isVisible: false,
-                // labelAlignment: ChartDataLabelAlignment.auto,
               ),
             ),
           ],

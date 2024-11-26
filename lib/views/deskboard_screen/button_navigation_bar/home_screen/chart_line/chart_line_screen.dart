@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../../../../view_model/Bluetooth_provider/BLEProvider.dart';
 import '../../button_navigation_bar.dart';
 import '../history/history_screen.dart';
 import 'linechart_EC/linechart_EC.dart';
@@ -96,7 +98,46 @@ class _ChartLineScreenState extends State<ChartLineScreen> {
                     ),
                   ],
                 ),
-                child: LinechartPH(),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+
+                    Padding(
+                      padding: const EdgeInsets.only(right: 10.0),
+                      child: Text('pH', style: TextStyle(fontWeight: FontWeight.bold),),
+                    ),
+
+                    Consumer<BLEProvider>(
+                      builder: (context, bleProvider, child) {
+                        final number = bleProvider.latestNumber;
+                        if (number != null) {
+                          if (number < 7) {
+                            return Text(
+                              "${number.toString()} ACID",
+                              style: TextStyle(color: Colors.red),
+                            );
+                          } else if (number > 7) {
+                            return Text(
+                              "${number.toString()} ALKALINE",
+                              style: TextStyle(color: Colors.green),
+                            );
+                          } else if (number == 7) {
+                            return Text(
+                              "${number.toString()} NEUTRAL",
+                              style: TextStyle(color: Colors.blue),
+                            );
+                          }
+                        }
+                        return Text(
+                          "Invalid number",
+                          style: TextStyle(color: Colors.grey),
+                        );
+                      },
+                    ),
+
+                    Expanded(child: LinechartPH()),
+                  ],
+                )
               ),
               heightsize,
               Container(
