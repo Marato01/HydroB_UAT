@@ -268,7 +268,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                           : Consumer<BLEProvider>(
                               builder: (context, bleProvider, child) {
                                 final number = bleProvider.latestNumber;
-                                return number != null
+                                final status = bleProvider.isConnected;
+                                return status == true
                                     ? Text(number.toString(),style: TextStyle(fontSize: 40),)
                                     : Lottie.asset(
                                         'assets/lottie/Animation - 1729670874357.json',
