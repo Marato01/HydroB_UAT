@@ -101,7 +101,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => const ChartLineScreen()));
+                                  builder: (context) =>
+                                      const ChartLineScreen()));
                         },
                         child: Image.asset(
                           'assets/icons/chart.png',
@@ -150,12 +151,21 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                           style: TextStyle(
                             color: Colors.white,
                             fontFamily:
-                                AppLocalizations.of(context)!.choosevegetable == 'en' ? 'lato' : KhmerFonts.freehand,
+                                AppLocalizations.of(context)!.choosevegetable ==
+                                        'en'
+                                    ? 'lato'
+                                    : KhmerFonts.freehand,
                             fontSize:
-                                AppLocalizations.of(context)!.choosevegetable == 'en' ? 10 : 10,
+                                AppLocalizations.of(context)!.choosevegetable ==
+                                        'en'
+                                    ? 10
+                                    : 10,
                             // Only include the package if KhmerFonts is used
                             package:
-                                AppLocalizations.of(context)!.choosevegetable == 'en' ? null : 'khmer_fonts',
+                                AppLocalizations.of(context)!.choosevegetable ==
+                                        'en'
+                                    ? null
+                                    : 'khmer_fonts',
                           ),
                         ),
                       ),
@@ -164,7 +174,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                 ],
               ),
               sizebox,
-
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -186,18 +195,26 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                         : setValue.name,
                     style: TextStyle(
                       fontFamily:
-                          AppLocalizations.of(context)!.vegetablenotfound == 'en' ? 'lato' : KhmerFonts.freehand,
+                          AppLocalizations.of(context)!.vegetablenotfound ==
+                                  'en'
+                              ? 'lato'
+                              : KhmerFonts.freehand,
                       fontSize:
-                          AppLocalizations.of(context)!.vegetablenotfound == 'en' ? 10 : 12,
+                          AppLocalizations.of(context)!.vegetablenotfound ==
+                                  'en'
+                              ? 10
+                              : 12,
                       fontWeight: FontWeight.bold,
                       // Only include the package if KhmerFonts is used
                       package:
-                          AppLocalizations.of(context)!.vegetablenotfound == 'en' ? null : 'khmer_fonts',
+                          AppLocalizations.of(context)!.vegetablenotfound ==
+                                  'en'
+                              ? null
+                              : 'khmer_fonts',
                     ),
                   ),
                 ],
               ),
-
               sizebox,
               Container(
                 padding: const EdgeInsets.all(10),
@@ -214,7 +231,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                       // How much the shadow spreads
                       blurRadius: 10,
                       // How blurry the shadow is
-                      offset: const Offset(0, 5), // Offset in the x and y direction
+                      offset:
+                          const Offset(0, 5), // Offset in the x and y direction
                     ),
                   ],
                 ),
@@ -236,25 +254,32 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                         ),
                       ],
                     ),
-
                     Center(
                       child: activatePH.switchValue == false
-                          ? const Text(
-                        'not activate',
-                        style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      )
-                          : Lottie.asset(
-                        'assets/lottie/Animation - 1729670874357.json',
-                        height: MediaQuery.of(context).size.height * 0.09,
-                        repeat: true,    // Repeat animation
-                        reverse: false,  // Play animation in reverse
-                        animate: true,   // Start the animation automatically
-                      ),
+                          ? Center(
+                              child: Text(
+                                "not activate",
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            )
+                          : Consumer<BLEProvider>(
+                              builder: (context, bleProvider, child) {
+                                final number = bleProvider.latestNumber;
+                                return number != null
+                                    ? Text(number.toString(),style: TextStyle(fontSize: 24),)
+                                    : Lottie.asset(
+                                        'assets/lottie/Animation - 1729670874357.json',
+                                        height: MediaQuery.of(context).size.height * 0.09,
+                                        repeat: true,
+                                        reverse: false,
+                                        animate: true,
+                                      );
+                              },
+                            ),
                     ),
-
                     SizedBox(
                       height: MediaQuery.of(context).size.height * 0.01,
                     ),
@@ -271,7 +296,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                 fontFamily: KhmerFonts.freehand,
                                 package: 'khmer_fonts',
                                 color: activatePH.switchValue == false
-                                    ? const Color(0xFFFF00712D).withOpacity(0.20)
+                                    ? const Color(0xFFFF00712D)
+                                        .withOpacity(0.20)
                                     : const Color(0xFFFF00712D),
                               ),
                             ),
@@ -282,7 +308,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                 fontFamily: KhmerFonts.freehand,
                                 package: 'khmer_fonts',
                                 color: activatePH.switchValue == false
-                                    ? const Color(0xFFFF00712D).withOpacity(0.20)
+                                    ? const Color(0xFFFF00712D)
+                                        .withOpacity(0.20)
                                     : const Color(0xFFFF00712D),
                               ),
                             ),
@@ -312,9 +339,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                   onChanged: (value) async {
                                     await switchProvider.toggleSwitch(
                                         context, value);
-                                    if(value){
+                                    if (value) {
                                       btnSwitch.writeCharacteristic("1");
-                                    }else{
+                                    } else {
                                       btnSwitch.writeCharacteristic("2");
                                     }
                                   },
@@ -345,7 +372,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                       // How much the shadow spreads
                       blurRadius: 10,
                       // How blurry the shadow is
-                      offset: const Offset(0, 5), // Offset in the x and y direction
+                      offset:
+                          const Offset(0, 5), // Offset in the x and y direction
                     ),
                   ],
                 ),
@@ -367,25 +395,24 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                         ),
                       ],
                     ),
-
                     Center(
                       child: activateEC.switchValue == false
                           ? const Text(
-                        'not activate',
-                        style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      )
+                              'not activate',
+                              style: TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            )
                           : Lottie.asset(
-                        'assets/lottie/Animation - 1729670874357.json',
-                        height: MediaQuery.of(context).size.height * 0.09,
-                        repeat: true,    // Repeat animation
-                        reverse: false,  // Play animation in reverse
-                        animate: true,   // Start the animation automatically
-                      ),
+                              'assets/lottie/Animation - 1729670874357.json',
+                              height: MediaQuery.of(context).size.height * 0.09,
+                              repeat: true, // Repeat animation
+                              reverse: false, // Play animation in reverse
+                              animate:
+                                  true, // Start the animation automatically
+                            ),
                     ),
-
                     SizedBox(
                       height: MediaQuery.of(context).size.height * 0.01,
                     ),
@@ -400,7 +427,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                 fontFamily: KhmerFonts.freehand,
                                 package: 'khmer_fonts',
                                 color: activateEC.switchValue == false
-                                    ? const Color(0xFFFF00712D).withOpacity(0.20)
+                                    ? const Color(0xFFFF00712D)
+                                        .withOpacity(0.20)
                                     : const Color(0xFFFF00712D),
                               ),
                             ),
@@ -411,7 +439,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                 fontFamily: KhmerFonts.freehand,
                                 package: 'khmer_fonts',
                                 color: activateEC.switchValue == false
-                                    ? const Color(0xFFFF00712D).withOpacity(0.20)
+                                    ? const Color(0xFFFF00712D)
+                                        .withOpacity(0.20)
                                     : const Color(0xFFFF00712D),
                               ),
                             ),
@@ -441,9 +470,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                   onChanged: (value) async {
                                     await switchProvider.toggleSwitch(
                                         context, value);
-                                    if(value){
+                                    if (value) {
                                       btnSwitch.writeCharacteristic("1");
-                                    }else{
+                                    } else {
                                       btnSwitch.writeCharacteristic("2");
                                     }
                                   },
