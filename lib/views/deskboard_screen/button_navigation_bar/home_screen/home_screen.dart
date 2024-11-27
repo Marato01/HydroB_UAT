@@ -269,7 +269,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                               builder: (context, bleProvider, child) {
                                 final number = bleProvider.latestNumber;
                                 return number != null
-                                    ? Text(number.toString(),style: TextStyle(fontSize: 24),)
+                                    ? Text(number.toString(),style: TextStyle(fontSize: 40),)
                                     : Lottie.asset(
                                         'assets/lottie/Animation - 1729670874357.json',
                                         height: MediaQuery.of(context).size.height * 0.09,
