@@ -65,32 +65,52 @@ class _LinechartPHState extends State<LinechartPH> {
     return Scaffold(
       body: Center(
         child: SfCartesianChart(
-          margin: EdgeInsets.all(0.5),
-          backgroundColor: Colors.white,
+          margin: EdgeInsets.all(8),
+          backgroundColor: Colors.grey[100],
+          borderColor: Colors.grey.withOpacity(0.3),
+          borderWidth: 1,
+          title: ChartTitle(
+            text: 'Live pH Data',
+            textStyle: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+          ),
           primaryXAxis: DateTimeAxis(
-            majorGridLines: MajorGridLines(width: 0), // Hides X-axis grid lines
-            // intervalType: DateTimeIntervalType.milliseconds,
+            axisLine: AxisLine(width: 1, color: Colors.grey),
+            labelStyle: TextStyle(fontSize: 12, color: Colors.black),
+            majorGridLines: MajorGridLines(width: 0),
             dateFormat: DateFormat('HH:mm'),
             rangePadding: ChartRangePadding.auto,
           ),
           primaryYAxis: NumericAxis(
-            majorGridLines: MajorGridLines(width: 0), // Hides Y-axis grid lines
-            isVisible: true, // Make Y-axis visible
+            axisLine: AxisLine(width: 1, color: Colors.grey),
+            labelStyle: TextStyle(fontSize: 12, color: Colors.black),
+            majorGridLines: MajorGridLines(
+              dashArray: [5, 5],
+              color: Colors.grey.withOpacity(0.5),
+            ),
           ),
           series: [
             SplineAreaSeries<_ChartData, DateTime>(
               dataSource: _chartData,
               xValueMapper: (_ChartData data, _) => data.time,
               yValueMapper: (_ChartData data, _) => data.value,
-              color: Colors.green.withOpacity(0.3),
-              borderColor: Colors.green,
-              borderWidth: 1,
-              dataLabelSettings: const DataLabelSettings(
-                isVisible: false,
+              gradient: LinearGradient(
+                colors: [Colors.green.withOpacity(0.6), Colors.green.withOpacity(0.2)],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
               ),
+              borderColor: Colors.green,
+              borderWidth: 2,
+              markerSettings: MarkerSettings(
+                isVisible: false,
+                borderColor: Colors.green,
+                borderWidth: 1,
+                color: Colors.white,
+              ),
+              dataLabelSettings: DataLabelSettings(isVisible: false),
             ),
           ],
-        ),
+        )
+
       ),
     );
   }
