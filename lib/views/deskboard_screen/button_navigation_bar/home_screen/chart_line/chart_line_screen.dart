@@ -14,6 +14,9 @@ class ChartLineScreen extends StatefulWidget {
 }
 
 class _ChartLineScreenState extends State<ChartLineScreen> {
+
+  String dropdownValue = 'one';
+
   @override
   Widget build(BuildContext context) {
     final heightsize = SizedBox(height: MediaQuery.of(context).size.height * 0.05);
@@ -36,7 +39,7 @@ class _ChartLineScreenState extends State<ChartLineScreen> {
             children: [
               Center(
                 child: Text(
-                  'Chart Line',
+                  '',
                   style: TextStyle(
                       color: Color(0xFFFF00712D),
                       fontSize: 25,
@@ -99,40 +102,85 @@ class _ChartLineScreenState extends State<ChartLineScreen> {
                   ],
                 ),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
 
-                    Padding(
-                      padding: const EdgeInsets.only(right: 10.0),
-                      child: Text('pH', style: TextStyle(fontWeight: FontWeight.bold),),
-                    ),
+                       DropdownButton<String>(
+                         value: dropdownValue,
+                         icon: const Icon(Icons.arrow_drop_down),
+                         style: const TextStyle(color: Colors.black),
+                         underline: Container(
+                           height: 1,
+                           color: Colors.black26,
+                         ),
+                         onChanged: (String? newValue){
+                           setState(() {
+                             dropdownValue = newValue!;
 
-                    Consumer<BLEProvider>(
-                      builder: (context, bleProvider, child) {
-                        final number = bleProvider.latestNumber;
-                        if (number != null) {
-                          if (number < 7) {
-                            return Text(
-                              "${number.toString()} ACID",
-                              style: TextStyle(color: Colors.red),
-                            );
-                          } else if (number > 7) {
-                            return Text(
-                              "${number.toString()} ALKALINE",
-                              style: TextStyle(color: Colors.green),
-                            );
-                          } else if (number == 7) {
-                            return Text(
-                              "${number.toString()} NEUTRAL",
-                              style: TextStyle(color: Colors.blue),
-                            );
-                          }
-                        }
-                        return Text(
-                          "Invalid number",
-                          style: TextStyle(color: Colors.grey),
-                        );
-                      },
+                             if (dropdownValue == 'one') {
+                               print("now");
+                             } else if (dropdownValue == 'two') {
+                               print("3h");
+                             } else if (dropdownValue == 'three'){
+                               print("1d");
+                             }
+                           });
+                         },
+
+                         items: const[
+                           DropdownMenuItem<String>(
+                             value: 'one',
+                               child: Text('now')),
+
+                           DropdownMenuItem<String>(
+                               value: 'two',
+                               child: Text('3h')),
+
+                           DropdownMenuItem<String>(
+                               value: 'three',
+                               child: Text('1d')),
+                         ],
+                       ),
+
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(right: 10.0),
+                              child: Text('pH', style: TextStyle(fontWeight: FontWeight.bold),),
+                            ),
+                            Consumer<BLEProvider>(
+                              builder: (context, bleProvider, child) {
+                                final number = bleProvider.latestNumber;
+                                if (number != null) {
+                                  if (number < 7) {
+                                    return Text(
+                                      "${number.toString()} ACID",
+                                      style: TextStyle(color: Colors.red),
+                                    );
+                                  } else if (number > 7) {
+                                    return Text(
+                                      "${number.toString()} ALKALINE",
+                                      style: TextStyle(color: Colors.deepPurpleAccent),
+                                    );
+                                  } else if (number == 7) {
+                                    return Text(
+                                      "${number.toString()} NEUTRAL",
+                                      style: TextStyle(color: Colors.green),
+                                    );
+                                  }
+                                }
+                                return Text(
+                                  "Turn on bluetooth",
+                                  style: TextStyle(color: Colors.grey, fontSize: 10),
+                                );
+                              },
+                            ),
+                          ],
+                        )
+                      ],
                     ),
 
                     Expanded(child: LinechartPH()),
