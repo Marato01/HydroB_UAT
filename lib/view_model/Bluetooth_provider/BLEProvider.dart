@@ -179,7 +179,7 @@ class BLEProvider extends ChangeNotifier {
           debugPrint('Connection state: ${connectionState.connectionState}');
           if (connectionState.connectionState == DeviceConnectionState.connected) {
             _isConnected = true;
-            //stream after connect device succesful
+            //stream after connect device successful
             readCharacteristic();
             notifyListeners();
 
@@ -213,7 +213,8 @@ class BLEProvider extends ChangeNotifier {
     }
 
     try {
-      final value = message.codeUnits;
+      final value = utf8.encode(message);
+      print(value);
       final characteristic = QualifiedCharacteristic(
         serviceId: serviceUuid,
         characteristicId: characteristicUuid,
@@ -221,11 +222,13 @@ class BLEProvider extends ChangeNotifier {
       );
 
       await flutterReactiveBle.writeCharacteristicWithResponse(characteristic, value: value);
+
+      debugPrint('Write success');
     } catch (e) {
+      print(e);
       throw Exception('Error writing characteristic: $e');
     }
   }
-
 
   // Function read value
   Future<void> readCharacteristic() async {
@@ -260,12 +263,12 @@ class BLEProvider extends ChangeNotifier {
       for (var service in services) {
         for (var characteristic in service.characteristics) {
           if (characteristic.isNotifiable) {
-            serviceUuid = service.serviceId;
-            characteristicUuid = characteristic.characteristicId;
+            var _serviceUuid = service.serviceId;
+            var _characteristicUuid = characteristic.characteristicId;
 
             notifiableCharacteristic = QualifiedCharacteristic(
-              serviceId: serviceUuid,
-              characteristicId: characteristicUuid,
+              serviceId: _serviceUuid,
+              characteristicId: _characteristicUuid,
               deviceId: _selectedDevice!.id,
             );
             break;
